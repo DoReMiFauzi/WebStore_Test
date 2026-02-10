@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\kategoriModel;
 
 class barangModel extends Model
 {
@@ -10,7 +11,12 @@ class barangModel extends Model
 
     protected $fillable = [
         'nama_barang',
+        'kategori_id',
         'deskripsi',
         'harga',
     ];
+
+    public function kategori(){
+        return $this->belongsTo(kategoriModel::class, 'kategori_id');
+    }
 }

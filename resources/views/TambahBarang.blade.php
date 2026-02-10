@@ -49,6 +49,16 @@
 </div>
 
 <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Kategori</label>
+    <select class="form-select mb-3" name="kategori_id" aria-label="Default select example">
+            <option selected disabled>Pilih Kategori</option>
+            @foreach ($kategori as $k)
+            <option value="{{ $k->id }}">{{ $k->nama_kategori }}</option>
+            @endforeach
+    </select>
+</div>
+
+<div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Deskripsi Barang</label>
     <input type="text" class="form-control" name="deskripsi" value="{{ old('deskripsi') }}">
 </div>

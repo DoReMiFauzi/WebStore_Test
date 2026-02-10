@@ -34,22 +34,28 @@
         <div class="p-5 text-center bg-light">
           <h1 class="mb-3">Selamat Datang & Selamat Berbelanja</h1>
           <h4 class="mb-3">Kami Harap Anda Menikmati Pengalaman Berbelanja Kami
-            , @if ($jumlahBarang == 2)
-                Kami Memiliki sekitar {{ $jumlahBarang }} Barang
-            @elseif ($jumlahBarang >= 3)
-                Kami Memiliki Banyak Barang untuk Anda Pilih
-            @else
-                Maaf Kami Belum Memiliki Barang
-            @endif
           </h4>
         </div>
     {{-- End Jumbotron --}}
 
     {{-- Search Bar --}}
-    <div class="container d-flex justify-content-center mt-4">
-      <form class="d-flex w-75" role="search">
-        <input class="form-control me-2" type="search" placeholder="Cari barang ...">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+    <div class="container mt-5">
+      <form method="GET" action="{{ route('barang.index') }}" class="mb-3">
+          <select name="kategori" class="form-select">
+              <option value="">-- Semua Kategori --</option>
+              @foreach ($kategori as $k)
+                  <option value="{{ $k->id }}"
+                      {{ request('kategori') == $k->id ? 'selected' : '' }}>
+                      {{ $k->nama_kategori }}
+                  </option>
+              @endforeach
+          </select>
+      
+          <input type="text" name="search" class="form-control mt-2"
+                 placeholder="Cari barang..."
+                 value="{{ request('search') }}">
+      
+          <button class="btn btn-primary mt-2">Gas Filter 🔍</button>
       </form>
     </div>
     {{-- End Navbar --}}
@@ -60,7 +66,7 @@
       @foreach ($barang as $item)   
       <div class="card" style="width: 15rem;">
         <div class="card-body">
-          <h5 class="card-title">{{ $item->nama_barang }}</h5>
+          <h5 class="card-title">{{ $item->nama_barang }}</h5> <p>{{ $item->kategori->nama_kategori }}</p>
           <h6 class="card-subtitle mb-2 text-muted"> Rp{{ number_format($item->harga, 0, ',', '.') }}</h6>
           <p class="card-text">{{ $item->deskripsi }}</p>
           <a href="{{ route('barang.show', $item->id) }}" class="btn btn-primary">Beli Barang</a>

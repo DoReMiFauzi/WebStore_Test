@@ -4,17 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\barangModel;
 use Illuminate\Http\Request;
+use App\Models\kategoriModel;
 
 class barangController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $barang = barangModel::all();
-        $jumlahBarang = $barang->count();
-        return view('beranda', compact('barang', 'jumlahBarang'));
+    $barang = barangModel::with('kategori')
+        ->when($request->kategori, function ($query) use ($request) {
+            $query->where('kategori_id', $request->kategori);
+        })
+        ->when($request->search, function ($query) use ($request) {
+            $query->where('nama_barang', 'like', '%' . $request->search . '%');
+        })
+        ->get();
+        $kategori = kategoriModel::all();
+        return view('beranda', compact('barang', 'kategori'));
     }
 
     /**
@@ -22,7 +30,8 @@ class barangController extends Controller
      */
     public function create()
     {
-        return view('TambahBarang');
+        $kategori = kategoriModel::all();
+        return view('TambahBarang', compact('kategori'));
     }
 
     /**
@@ -32,6 +41,7 @@ class barangController extends Controller
     {
         $request->validate([
             'nama_barang' => 'required|string|max:255',
+            'kategori_id' => 'required|exists:kategori,id',
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:500',
         ]);
